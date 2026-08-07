@@ -22,8 +22,14 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Get Dependencies
-        run: flutter pub get
+      - name: Generate Fresh Android Project
+        run: |
+          flutter create . --platforms android
+          flutter pub get
+
+      - name: Inject Network Permissions
+        run: |
+          perl -pi -e 's/<application/<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"\/>\n    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"\/>\n    <application/g' android/app/src/main/AndroidManifest.xml
 
       - name: Build APK
         run: flutter build apk --release
